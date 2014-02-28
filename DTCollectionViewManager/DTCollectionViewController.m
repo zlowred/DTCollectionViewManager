@@ -332,7 +332,9 @@ referenceSizeForFooterInSection:(NSInteger)sectionNumber
             [update.movedRowIndexPaths enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
                 [self.collectionView moveItemAtIndexPath:key toIndexPath:obj];
             }];
-        } completion:nil];
+        } completion:^{
+            [self.collectionView reloadData];
+        }];
     }
 }
 
