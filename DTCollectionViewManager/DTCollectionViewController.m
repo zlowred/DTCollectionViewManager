@@ -304,10 +304,10 @@ referenceSizeForFooterInSection:(NSInteger)sectionNumber
             [sectionsToInsert addIndex:idx];
         }
     }];
-    
+
     NSInteger sectionChanges = [update.deletedSectionIndexes count] + [update.insertedSectionIndexes count] + [update.updatedSectionIndexes count];
-    NSInteger itemChanges = [update.deletedRowIndexPaths count] + [update.insertedRowIndexPaths count] + [update.updatedRowIndexPaths count];
-    
+    NSInteger itemChanges = [update.deletedRowIndexPaths count] + [update.insertedRowIndexPaths count] + [update.updatedRowIndexPaths count] + [update.movedRowIndexPaths count];
+
     if (sectionChanges)
     {
         [self.collectionView performBatchUpdates:^{
@@ -316,19 +316,22 @@ referenceSizeForFooterInSection:(NSInteger)sectionNumber
             [self.collectionView reloadSections:update.updatedSectionIndexes];
         } completion:nil];
     }
-    
+
     if ([self shouldReloadCollectionViewToPreventInsertFirstItemIssueForUpdate:update])
     {
         [self.collectionView reloadData];
         return;
     }
-    
+
     if ((itemChanges && (sectionChanges == 0)))
     {
         [self.collectionView performBatchUpdates:^{
             [self.collectionView deleteItemsAtIndexPaths:update.deletedRowIndexPaths];
             [self.collectionView insertItemsAtIndexPaths:update.insertedRowIndexPaths];
             [self.collectionView reloadItemsAtIndexPaths:update.updatedRowIndexPaths];
+            [update.movedRowIndexPaths enumerateKeysAndObjectsUsingBlock: ^(id key, id obj, BOOL *stop) {
+                [self.collectionView moveItemAtIndexPath:key toIndexPath:obj];
+            }];
         } completion:nil];
     }
 }
