@@ -297,10 +297,6 @@ referenceSizeForFooterInSection:(NSInteger)sectionNumber
 
 -(void)storageDidPerformUpdate:(DTStorageUpdate *)update
 {
-    [CATransaction begin];
-    [CATransaction setCompletionBlock:^{
-        [self.collectionView reloadData];
-    }];
     NSMutableIndexSet * sectionsToInsert = [NSMutableIndexSet indexSet];
     [update.insertedSectionIndexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL *stop) {
         if ([self.collectionView numberOfSections] <= idx)
@@ -340,8 +336,6 @@ referenceSizeForFooterInSection:(NSInteger)sectionNumber
             [self.collectionView reloadData];
         }];
     }
-    [CATransaction commit];
-
 }
 
 // This is to prevent a bug in UICollectionView from occurring.
